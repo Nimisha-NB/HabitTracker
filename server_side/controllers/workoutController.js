@@ -71,24 +71,31 @@ const deleteWorkout  = async(req,res)=>{
     res.status(200).json(workout)
 }
 
-//update a workout
-const updateWorkout = async(req,res)=>{
-    const {id} = req.params
+const updateWorkout = async (req, res) => {
+    const { id } = req.params;
+    const { count } = req.body; // Get the count from request body
 
-    if(!mongoose.Types.ObjectId.isValid(id)){
-        return res.status(404).json({error: "No such workout"})
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: "No such workout" });
     }
 
-    const workout = await Workout.findOneAndUpdate({_id: id},{
-        ...req.body
-    })
+    const workout = await Workout.findById(id);
 
-    if(!workout){
-        return res.status(404).json({error: "No such workout"})
+    if (!workout) {
+        return res.status(404).json({ error: "No such workout" });
     }
 
-    res.status(200).json(workout)
-}
+    // Update the workout with new count
+    workout.count = count;
+
+    // If the count equals or exceeds the load, mark the workout as completed
+    workout.completed = workout.count >= workout.load;
+
+    const updatedWorkout = await workout.save();
+
+    res.status(200).json(updatedWorkout);
+};
+
 
 
 module.exports = {

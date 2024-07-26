@@ -16,6 +16,14 @@ const workoutSchema = new Schema({
         type:Number,
         required: true
     },
+    count: {
+        type: Number,
+        default: 0 // Default to 0
+    },
+    completed: {
+        type: Boolean,
+        default: false // Default to false
+    },
     user_id:{
         type: String,
         required: true
