@@ -82,7 +82,8 @@ input, select {
   border: 1px solid #ddd;
   border-radius: 4px;
   box-sizing: border-box;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  font-family: "Poppins";
 }
 form button {
   background: var(--primary);
@@ -151,4 +152,5 @@ font-size: 1rem;
 color: var(--primary); /* Customize the color as needed */
 margin-top: 20px;
 font-weight: bold;
+font-family: "Poppins";
 }
