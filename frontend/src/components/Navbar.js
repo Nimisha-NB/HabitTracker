@@ -1,10 +1,11 @@
-import {Link} from 'react-router-dom'
+import {Link, useLocation } from 'react-router-dom'
 import {useLogout} from '../hooks/useLogout'
 import {useAuthContext} from '../hooks/useAuthContext'
 
 const Navbar=() =>{
     const {logout} = useLogout()
     const { user } = useAuthContext()
+    const location = useLocation();
 
     const handleClick = () => {
         logout()
@@ -21,9 +22,15 @@ const Navbar=() =>{
                 {user && (
                     <div>
                         <span style={{ marginRight: '10px' }}>{user.email} </span>
-                        <Link to="/tags">
-                            <button style={{ marginRight: '10px' }}>Popular Tags</button>
-                        </Link>
+                        {location.pathname === '/tags' ? (
+                            <Link to="/">
+                                <button style={{ marginRight: '10px' }}>Home Page</button>
+                            </Link>
+                        ) : (
+                            <Link to="/tags">
+                                <button style={{ marginRight: '10px' }}>Popular Tags</button>
+                            </Link>
+                        )}
                         <button onClick={handleClick}>Log out</button>
                     </div>)}
                 {!user && (
