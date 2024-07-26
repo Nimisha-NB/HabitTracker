@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
+import TagPage from './pages/TagPage'
 
 function App() {
   const { user } = useAuthContext()
@@ -26,6 +27,10 @@ function App() {
           <Route
           path="/signup"
           element={!user? <Signup/>: <Navigate to='/' />}
+          />
+          <Route
+              path="/tags"
+              element={<TagPage />}
           />
         </Routes>
       </div>

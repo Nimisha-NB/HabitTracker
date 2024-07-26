@@ -1,84 +1,96 @@
-import { useState } from "react"
-import { useWorkoutsContext } from "../hooks/useWorkoutsContext"
-import { useAuthContext } from "../hooks/useAuthContext"
+import { useState } from "react";
+import { useWorkoutsContext } from "../hooks/useWorkoutsContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const WorkoutForm = () => {
-    const {dispatch} = useWorkoutsContext()
-    const {user} = useAuthContext()
+  const { dispatch } = useWorkoutsContext();
+  const { user } = useAuthContext();
 
-    const[title, setTitle] = useState('')
-    const[load, setLoad] = useState('')
-    const[reps, setReps] = useState('')
-    const[error, setError] = useState(null)
-    const[emptyfields,setEmptyfields] = useState([])
+  const [title, setTitle] = useState('');
+  const [load, setLoad] = useState(''); 
+  const [reps, setReps] = useState('Health');
+  const [error, setError] = useState(null);
+  const [emptyFields, setEmptyFields] = useState([]);
 
-    const handleSubmit = async(e) => {
-        e.preventDefault()
-        if(!user){
-            setError('You must be logged in')
-            return
-        }
+  const categories = ['Health', 'Productivity', 'Hobby', 'Fitness', 'Study'];
 
-        const workout = {title, load, reps}
-
-        const response = await fetch('/api/workouts',{
-            method: 'POST',
-            body: JSON.stringify(workout),
-            headers:{
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${user.token}`
-            }
-        })
-        const json = await response.json()
-
-        if(!response.ok){
-            setError(json.error)
-            setEmptyfields(json.emptyfields)
-        }
-        if(response.ok){
-            setTitle('')
-            setLoad('')
-            setReps('')
-            setError(null)
-            setEmptyfields([])
-            console.log('new workout added', json)
-            dispatch({type: 'CREATE_WORKOUT', payload: json})
-        }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      setError('You must be logged in');
+      return;
     }
-    return(
-        <form className="create" onSubmit={handleSubmit}>
-            <h3>Add a New Habit</h3>
 
-            <label htmlFor="">Habit Title:</label>
-            <input 
-            type="text"
-            onChange={(e)=> setTitle(e.target.value)}
-            value={title} 
-            className={emptyfields.includes('title') ? 'error': ''}
-             />
+    const workout = { title, load, reps, count: 0 };
 
-            <label htmlFor="">Frequency:</label>
-            <input 
-            type="number"
-            onChange={(e)=> setLoad(e.target.value)}
-            value={load} 
-            className={emptyfields.includes('load') ? 'error': ''}
+    const response = await fetch('/api/workouts', {
+      method: 'POST',
+      body: JSON.stringify(workout),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      }
+    });
+    const json = await response.json();
 
-             />
+    if (!response.ok) {
+      setError(json.error);
+      setEmptyFields(json.emptyFields || []);
+    }
+    if (response.ok) {
+      setTitle('');
+      setLoad('');
+      setReps('Health');
+      setError(null);
+      setEmptyFields([]);
+      console.log('new workout added', json);
+      dispatch({ type: 'CREATE_WORKOUT', payload: json });
+    }
+  };
 
-             <label htmlFor="">Tag:</label>
-            <input 
-            type="text"
-            onChange={(e)=> setReps(e.target.value)}
-            value={reps} 
-            className={emptyfields.includes('reps') ? 'error': ''}
+  return (
+    <form className="create" onSubmit={handleSubmit}>
+      <h3>Add a New Habit</h3>
 
-             />
+      <div className="form-group">
+        <label htmlFor="title">Habit Title:</label>
+        <input
+          type="text"
+          onChange={(e) => setTitle(e.target.value)}
+          value={title}
+          className={emptyFields.includes('title') ? 'error' : ''}
+        />
+      </div>
 
-             <button>Add Habit</button>
-             {error && <div className="error">{error}</div> }
-        </form>
-    )
-}
+      <div className="form-group">
+        <label htmlFor="load">Target:</label>
+        <input
+          type="load"
+          onChange={(e) => setLoad(e.target.value)}
+          value={load}
+          className={emptyFields.includes('load') ? 'error' : ''}
+        />
+      </div>
 
-export default WorkoutForm
+      <div className="form-group">
+        <label htmlFor="reps">Tag:</label>
+        <select
+          onChange={(e) => setReps(e.target.value)}
+          value={reps}
+          className={emptyFields.includes('reps') ? 'error' : ''}
+        >
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <button className="submit-button">Add Habit</button>
+      {error && <div className="error">{error}</div>}
+    </form>
+  );
+};
+
+export default WorkoutForm;

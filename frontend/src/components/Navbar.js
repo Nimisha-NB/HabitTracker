@@ -20,7 +20,10 @@ const Navbar=() =>{
             <nav>
                 {user && (
                     <div>
-                        <span>{user.email} </span>
+                        <span style={{ marginRight: '10px' }}>{user.email} </span>
+                        <Link to="/tags">
+                            <button style={{ marginRight: '10px' }}>Popular Tags</button>
+                        </Link>
                         <button onClick={handleClick}>Log out</button>
                     </div>)}
                 {!user && (
